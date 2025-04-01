@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ChatInput } from './ChatInput';
 import { ChatMessage } from './ChatMessage';
@@ -47,9 +49,12 @@ export function Chat() {
       }
 
       const data = await response.json();
+      // Clean up the AI response by removing the instruction format
+      const cleanResponse = data.response.replace(/<s>\[INST\].*?\[\/INST\]\s*/s, '');
+      
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: data.response,
+        content: cleanResponse,
         isUser: false,
         timestamp: new Date(),
       };
@@ -70,7 +75,7 @@ export function Chat() {
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-2xl mx-auto">
+    <div className="flex flex-col h-[calc(100vh-8rem)] max-w-2xl mx-auto bg-gray-50 rounded-lg shadow-lg">
       <div className="flex-1 overflow-y-auto p-4">
         {messages.map((message) => (
           <ChatMessage
@@ -82,7 +87,9 @@ export function Chat() {
         ))}
         <div ref={messagesEndRef} />
       </div>
-      <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
+      <div className="sticky bottom-0 bg-white border-t border-gray-200">
+        <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
+      </div>
     </div>
   );
 } 

@@ -10,14 +10,14 @@ export function ChatMessage({ message, isUser, timestamp }: ChatMessageProps) {
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
       <div
-        className={`max-w-[70%] rounded-lg p-3 ${
+        className={`max-w-[70%] rounded-lg p-4 ${
           isUser
-            ? 'bg-blue-500 text-white'
-            : 'bg-gray-100 text-gray-900'
+            ? 'bg-blue-600 text-white'
+            : 'bg-white text-gray-900 shadow-sm border border-gray-200'
         }`}
       >
-        <p className="text-sm">{message}</p>
-        <span className="text-xs opacity-70 mt-1 block">
+        <p className="text-sm leading-relaxed">{message}</p>
+        <span className={`text-xs mt-2 block ${isUser ? 'text-blue-100' : 'text-gray-500'}`}>
           {timestamp.toLocaleTimeString()}
         </span>
       </div>
