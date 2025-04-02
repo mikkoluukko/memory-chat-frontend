@@ -15,6 +15,8 @@ export function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  // For now, using a hardcoded userId. In production, this would come from authentication
+  const userId = 'test-user-123';
 
   const scrollToBottom = () => {
     if (messagesEndRef.current?.scrollIntoView) {
@@ -43,7 +45,7 @@ export function Chat() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ message, userId }),
       });
 
       if (!response.ok) {
