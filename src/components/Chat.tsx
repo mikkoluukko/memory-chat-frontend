@@ -3,6 +3,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChatInput } from './ChatInput';
 import { ChatMessage } from './ChatMessage';
+import dynamic from 'next/dynamic';
+
+// Import VoiceButton with no SSR to avoid hydration issues
+const DynamicVoiceButton = dynamic(() => import('./VoiceButton').then(mod => ({ default: mod.VoiceButton })), {
+  ssr: false
+});
 
 interface Message {
   id: string;
@@ -14,9 +20,17 @@ interface Message {
 export function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   // For now, using a hardcoded userId. In production, this would come from authentication
   const userId = 'test-user-123';
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
+  // Set mounted state for client-side only features
+  useEffect(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
 
   const scrollToBottom = () => {
     if (messagesEndRef.current?.scrollIntoView) {
@@ -40,7 +54,7 @@ export function Chat() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3001/api/chat/message', {
+      const response = await fetch(`${apiUrl}/api/chat/message`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,12 +96,22 @@ export function Chat() {
     <div className="flex flex-col h-[calc(100vh-8rem)] max-w-2xl mx-auto bg-gray-50 rounded-lg shadow-lg">
       <div className="flex-1 overflow-y-auto p-4">
         {messages.map((message) => (
-          <ChatMessage
-            key={message.id}
-            message={message.content}
-            isUser={message.isUser}
-            timestamp={message.timestamp}
-          />
+          <div key={message.id} className="mb-4">
+            <ChatMessage
+              message={message.content}
+              isUser={message.isUser}
+              timestamp={message.timestamp}
+            />
+            {!message.isUser && isMounted && (
+              <div className="flex justify-end mt-1">
+                <DynamicVoiceButton 
+                  text={message.content} 
+                  onSpeechResult={() => {}} 
+                  disabled={isLoading} 
+                />
+              </div>
+            )}
+          </div>
         ))}
         <div ref={messagesEndRef} />
       </div>
