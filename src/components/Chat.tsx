@@ -17,13 +17,15 @@ interface Message {
   timestamp: Date;
 }
 
-export function Chat() {
+interface ChatProps {
+  userId?: string;
+}
+
+export function Chat({ userId = 'test-user-123' }: ChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  // For now, using a hardcoded userId. In production, this would come from authentication
-  const userId = 'test-user-123';
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
   // Set mounted state for client-side only features
