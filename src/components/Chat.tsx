@@ -21,7 +21,7 @@ interface ChatProps {
   userId?: string;
 }
 
-export function Chat({ userId = 'test-user-123' }: ChatProps) {
+export function Chat({ userId = 'demo-user' }: ChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);

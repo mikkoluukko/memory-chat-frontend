@@ -2,8 +2,8 @@ import { Chat } from '@/components/Chat';
 import { PersonalityEditor } from '@/components/PersonalityEditor';
 
 export default function Home() {
-  // Using the same hardcoded user ID as in Chat component
-  const userId = 'test-user-123';
+  // Using a hardcoded user ID for demonstration
+  const userId = 'demo-user';
 
   return (
     <main className="min-h-screen bg-gray-100">
